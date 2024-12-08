@@ -11,7 +11,6 @@ interface ICreatorToken {
     /// @dev Emitted when `newValidator` contract is updated from `oldValidator` contract.
     event TransferValidatorUpdated(address oldValidator, address newValidator);
 
-
     /// @dev Returns recent transfer `validator` contract address.
     /// @custom:note The zero address means no transfer validator is set.
     function getTransferValidator() external view returns (address validator);
