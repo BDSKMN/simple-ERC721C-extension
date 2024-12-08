@@ -13,8 +13,8 @@ This repository is specifically about simple ERC721-C contract extension to be i
 ## Implementations
 ![Diagram](images/0_diagram.png)
 
-1. Implementation contract MUST inherit to [ERC721TransferValidator.sol](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/extensions/ERC721TransferValidator.sol). The contract inherits to [ICreatorToken.sol](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/interfaces/ICreatorToken.sol) and [ITransferValidator721.sol](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/interfaces/ITransferValidator721.sol) -- see diagram (above).
-2. Implementation contract SHOULD inherit to ERC2981 contract. In this case, we're using [ERC2981 from solady](https://github.com/Vectorized/solady/blob/main/src/tokens/ERC2981.sol) -- see diagram (above).
+1. Implementation contract MUST inherit to [ERC721TransferValidator.sol](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/extensions/ERC721TransferValidator.sol). The contract inherits to [ICreatorToken.sol](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/interfaces/ICreatorToken.sol) and [ITransferValidator721.sol](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/interfaces/ITransferValidator721.sol) - see diagram (above).
+2. Implementation contract SHOULD inherit to ERC2981 contract. In this case, we're using [ERC2981 from solady](https://github.com/Vectorized/solady/blob/main/src/tokens/ERC2981.sol) - see diagram (above).
 3. Implementation contract MUST have `setTransferValidator`([link](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/examples/ERC721C.sol#L55)) external as [its defined at ICreatorToken.sol](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/interfaces/ICreatorToken.sol#L26) with access control.
 3. Override [supportInterface](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/examples/ERC721C.sol#L64) to also returns `true` for `0xcaee23ea` for ERC721 transfer validator function signature's interface ID and `0x2a55205a` for ERC2981's interface ID.
 4. Override `_beforeTokenTransfer` hook ([ERC721C](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/examples/ERC721C.sol#L100) / [ERC721AC](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/examples/ERC721AC.sol#L95)).
@@ -22,7 +22,7 @@ This repository is specifically about simple ERC721-C contract extension to be i
     - After contract is deployed OR
     - [Inside the constructor](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/examples/ERC721AC.sol#L30) along with `_setDefaultRoyalty` from ERC2981
 
-## Deployed Contracts at Testnet
+## Deployed Contracts at Base Sepolia Testnet
 
 | Contract | Address                                                                                                                       | OpenSea(testnets)
 |----------|-------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|
@@ -33,7 +33,7 @@ This repository is specifically about simple ERC721-C contract extension to be i
 
 Test belows are based on deployed contracts and OpenSea's collection page at testnets (above).
 
-1. This is what we see at `Creator earnings` tab at OpenSea's collection settings when transfer validator contract is not set -- `getTransferValidator` [returns zero address](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/extensions/ERC721TransferValidator.sol#L38).
+1. This is what we see at `Creator earnings` tab at OpenSea's collection settings when transfer validator contract is not set - [`getTransferValidator`](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/extensions/ERC721TransferValidator.sol#L38) returns zero address.
 ![1](images/1_when-fees-are-not-configured-but-enforceable.png)
 
 2. After fees were configured via OpenSea but transfer validator contract has not been set yet.
