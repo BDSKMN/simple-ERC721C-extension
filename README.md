@@ -3,24 +3,24 @@
 ## Background
 In April 2024, OpenSea announced that creators can now use [ERC721-C](https://github.com/limitbreakinc/creator-token-contracts/tree/main) from [Limit Break](https://limitbreak.com/index.html) to set and enforce their own creator earnings on OpenSea ([link](https://opensea.io/blog/articles/creator-earnings-erc721-c-compatibility-on-opensea)).
 
-The article stated that its also applicable for the creator who's using ERC721-C or ERC1155-C compatible custom smart contract. I've found [examples](https://github.com/limitbreakinc/creator-token-contracts/tree/main/contracts/examples) from LimitBreak's github repo but it doesn't suit my needs. So, I decided to make a simple extension based on [OpenSea's Creator Fee Enforcement docs](https://docs.opensea.io/docs/creator-fee-enforcement) without having to inherit to LimitBreak's ERC721-C.
+The article stated that its also applicable for the creator who's using ERC721-C or ERC1155-C compatible custom smart contract. I've found [examples](https://github.com/limitbreakinc/creator-token-contracts/tree/main/contracts/examples) from LimitBreak's github repo to serve that purpose but it doesn't suit my needs. So, I decided to make a simple extension based on [OpenSea's Creator Fee Enforcement docs](https://docs.opensea.io/docs/creator-fee-enforcement) without having to inherit to LimitBreak's ERC721-C.
 
 ## About
-This repository is specifically about simple ERC721-C contract extension to be inherited by any kind ERC721-based implementation contract. There are two examples of its implementation based on ERC721 base contracts:
+This repository is about a simple contract extension to be inherited by any ERC721-based implementation contract to comply with OpenSea's creator fee enforcement. There are two examples of its implementation based on ERC721-based contracts:
 1. [ERC721C](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/examples/ERC721C.sol) is for ERC721-based contract.
 2. [ERC721AC](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/examples/ERC721AC.sol) is for ERC721A-based contract.
 
 ## Implementations
 ![Diagram](images/0_diagram.png)
 
-1. Implementation contract MUST inherit to [ERC721TransferValidator.sol](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/extensions/ERC721TransferValidator.sol). The contract inherits to [ICreatorToken.sol](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/interfaces/ICreatorToken.sol) and [ITransferValidator721.sol](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/interfaces/ITransferValidator721.sol) - see diagram (above).
-2. Implementation contract SHOULD inherit to ERC2981 contract. In this case, we're using [ERC2981 from solady](https://github.com/Vectorized/solady/blob/main/src/tokens/ERC2981.sol) - see diagram (above).
-3. Implementation contract MUST have `setTransferValidator`([link](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/examples/ERC721C.sol#L55)) external as [its defined at ICreatorToken.sol](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/interfaces/ICreatorToken.sol#L26) with access control.
-3. Override [supportInterface](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/examples/ERC721C.sol#L64) to also returns `true` for `0xcaee23ea` for ERC721 transfer validator function signature's interface ID and `0x2a55205a` for ERC2981's interface ID.
-4. Override `_beforeTokenTransfer` hook ([ERC721C](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/examples/ERC721C.sol#L100) / [ERC721AC](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/examples/ERC721AC.sol#L95)).
+1. Implementation contract MUST inherit to `ERC721TransferValidator.sol` ([link](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/extensions/ERC721TransferValidator.sol)). The inherited contract itself inherits to `ICreatorToken.sol` ([link](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/interfaces/ICreatorToken.sol)) and `ITransferValidator721.sol` ([link](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/interfaces/ITransferValidator721.sol)).
+2. Implementation contract MUST implement `setTransferValidator`([link](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/examples/ERC721C.sol#L55)) external function as [its defined at](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/interfaces/ICreatorToken.sol#L26) `ICreatorToken.sol` with an access control.
+3. In this case, implementation contract inherits to ERC2981 ([NFT Royalty Standard](https://eips.ethereum.org/EIPS/eip-2981)) contract [by Solady](https://github.com/Vectorized/solady/blob/main/src/tokens/ERC2981.sol).
+4. Override `supportsInterface` [getter function](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/examples/ERC721C.sol#L64) to also returns `true` for `0xcaee23ea` as ERC721 transfer validator function signature's interface ID and `0x2a55205a` as ERC2981's interface ID.
+4. Override `_beforeTokenTransfer` hook ([ERC721C](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/examples/ERC721C.sol#L100) / [ERC721AC](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/examples/ERC721AC.sol#L95)) to facilitate `validateTransfer` as [its defined at](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/interfaces/ITransferValidator721.sol#L13) `ITransferValidator.sol` before token is transferred from and to non-zero address.
 5. There are two ways to set transfer validator contract:
-    - After contract is deployed OR
-    - [Inside the constructor](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/examples/ERC721AC.sol#L30) along with `_setDefaultRoyalty` from ERC2981
+    - At contract deployment by defining `_setTransferValidator` ([link](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/extensions/ERC721TransferValidator.sol#L64)) and `_setDefaultRoyalty` ([link](https://github.com/Vectorized/solady/blob/main/src/tokens/ERC2981.sol#L99)) values [inside the constructor](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/examples/ERC721AC.sol#L30) OR
+    - After contract deployment (runtime)
 
 ## Deployed Contracts at Base Sepolia Testnet
 
@@ -31,15 +31,15 @@ This repository is specifically about simple ERC721-C contract extension to be i
 
 ## Tests
 
-Test belows are based on deployed contracts and OpenSea's collection page at testnets (above).
+These are based on deployed contracts and OpenSea's collection page at testnets (above).
 
-1. This is what we see at `Creator earnings` tab at OpenSea's collection settings when transfer validator contract is not set - [`getTransferValidator`](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/extensions/ERC721TransferValidator.sol#L38) returns zero address.
+1. This is what we see at `Creator earnings` tab at OpenSea's collection settings when transfer validator contract is not set, meaning `getTransferValidator` ([link](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/extensions/ERC721TransferValidator.sol#L38) returns zero address.
 ![1](images/1_when-fees-are-not-configured-but-enforceable.png)
 
-2. After fees were configured via OpenSea but transfer validator contract has not been set yet.
+2. After fees were configured via OpenSea without setting transfer validator contract.
 ![2](images/2_fees-were-configured-but-NOT-enforced.png)
 
-3. NFT's owner listing a NFT for sale. The owner has an option to not paying creator fee (creator fee sets to 0%), because transfer validator contract is not set.
+3. The owner of a NFT has an option to not paying creator fee (creator fee sets to 0%), when transfer validator contract is not set.
 ![3](images/3_list-for-sale-when-fees-are-NOT-enforced.png)
 
 4. Listed NFT when transfer validator contract is not set.
@@ -51,10 +51,10 @@ Test belows are based on deployed contracts and OpenSea's collection page at tes
 6. This is what we see at `Creator earnings` tab when transfer validator contract is set ([Transaction's log](https://sepolia.basescan.org/tx/0xc6c49bf3694974fd82e35c5a69434f9fdd09078086aae8973ae925aaacdcbf42#eventlog))
 ![5](images/5_after-transfer-validator-was-set.png)
 
-7. NFT's owner listing a NFT for sale. The seller has NO option to not paying creator fee (creator fee is enforced), because transfer validator contract has been set.
+7. The owner of a NFT has NO option to not paying creator fee (creator fee is enforced), when transfer validator contract has been set.
 ![6](images/6_list-for-sale-when-fees-are-enforced.png)
 
-8. Listed NFT when transfer validator contract has been set.
+8. Listed NFT when transfer validator contract is set.
 ![7](images/7_listed-nft-when-fees-are-enforced.png)
 
 9. Transaction hash when listed NFT (#7) is bought:
@@ -62,4 +62,4 @@ Test belows are based on deployed contracts and OpenSea's collection page at tes
 
 
 ## Important Notes
-The contract had not been audited and unit tested, so use it with caution.
+It's just example contracts to implement creator fee enforcement for ERC721-based contracts, so do NOT blindly copy anything here into production code unless you really know what you are doing. Test thoroughly before implements it to your custom contract.
