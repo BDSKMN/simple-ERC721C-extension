@@ -57,7 +57,7 @@ contract ERC721C is ERC721, ERC2981, ERC721TransferValidator, Ownable {
     }
 
     /*//////////////////////////////////////////////////////////////
-                        PUBLIC VIEW FUNCTION
+                        PUBLIC VIEW FUNCTIONS
     //////////////////////////////////////////////////////////////*/
 
     /// @dev Returns true if this contract implements the interface defined by `interfaceId`.
@@ -68,8 +68,8 @@ contract ERC721C is ERC721, ERC2981, ERC721TransferValidator, Ownable {
         override(ERC2981, ERC721)
         returns (bool result)
     {
-        return interfaceId == 0x2a55205a // ERC2981
-            || interfaceId == 0xad0d7f6c // ICreatorToken
+        return interfaceId == INTERFACE_ID_ICREATORTOKEN // Interface ID for ICreatorToken
+            || interfaceId == 0x2a55205a // Interface ID for ERC2981
             || ERC721.supportsInterface(interfaceId);
     }
 
