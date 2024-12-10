@@ -16,12 +16,16 @@ import {ITransferValidator721} from "../interfaces/ITransferValidator721.sol";
  */
 abstract contract ERC721TransferValidator is ICreatorToken {
     /*//////////////////////////////////////////////////////////////
-                                CONSTANT
+                                CONSTANTS
     //////////////////////////////////////////////////////////////*/
 
     /// @dev Transfer validation function signature for ERC721.
     /// @custom:note Ref: https://docs.opensea.io/docs/creator-fee-enforcement#creator-token-standard
     bytes4 private constant _ERC721_TRANSFER_VALIDATION_FUNCTION_SIGNATURE = 0xcaee23ea;
+
+    /// @dev Interface ID for ICreatorToken.
+    /// @custom:note bytes4((type(ICreatorToken).interfaceId))
+    bytes4 internal constant INTERFACE_ID_ICREATORTOKEN = 0xad0d7f6c;
 
     /*//////////////////////////////////////////////////////////////
                                 STORAGE
