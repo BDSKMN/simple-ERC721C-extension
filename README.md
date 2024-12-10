@@ -14,9 +14,9 @@ This repository is about a simple contract extension to be inherited by any ERC7
 ![Diagram](images/0_diagram.png)
 
 1. Implementation contract MUST inherit to `ERC721TransferValidator.sol` ([link](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/extensions/ERC721TransferValidator.sol)). The inherited contract itself implements interfaces from `ICreatorToken.sol` ([link](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/interfaces/ICreatorToken.sol)) and `ITransferValidator721.sol` ([link](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/interfaces/ITransferValidator721.sol)).
-2. Implementation contract MUST implement `setTransferValidator`([link](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/examples/ERC721C.sol#L55)) external function as [its defined at](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/interfaces/ICreatorToken.sol#L26) `ICreatorToken.sol` with an access control.
+2. Implementation contract MUST implement `setTransferValidator`([link](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/examples/ERC721C.sol#L55)) external function as [its defined at](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/interfaces/ICreatorToken.sol#L26) `ICreatorToken.sol` with an access control (in this case, only contract's owner can invoke the function).
 3. In this case, implementation contract inherits to ERC2981 ([NFT Royalty Standard](https://eips.ethereum.org/EIPS/eip-2981)) contract [by Solady](https://github.com/Vectorized/solady/blob/main/src/tokens/ERC2981.sol).
-4. Override `supportsInterface` [getter function](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/examples/ERC721C.sol#L64) to also returns `true` for `0xcaee23ea` as ERC721 transfer validator function signature's interface ID and `0x2a55205a` as ERC2981's interface ID.
+4. Override `supportsInterface` [function](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/examples/ERC721C.sol#L64) to also returns `true` for `0xad0d7f6c` as ICreatorToken's interface ID and `0x2a55205a` as ERC2981's interface ID.
 4. Override `_beforeTokenTransfer` hook ([ERC721C](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/examples/ERC721C.sol#L100) / [ERC721AC](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/examples/ERC721AC.sol#L95)) to facilitate `validateTransfer` as [its defined at](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/interfaces/ITransferValidator721.sol#L13) `ITransferValidator.sol` before token is transferred from and to non-zero address.
 5. There are two ways to set transfer validator contract:
     - At contract deployment by defining `_setTransferValidator` ([link](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/extensions/ERC721TransferValidator.sol#L64)) and `_setDefaultRoyalty` ([link](https://github.com/Vectorized/solady/blob/main/src/tokens/ERC2981.sol#L99)) values [inside the constructor](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/examples/ERC721AC.sol#L30) OR
@@ -33,9 +33,9 @@ This repository is about a simple contract extension to be inherited by any ERC7
 
 ## Example of Implementations
 
-These examples are based on deployed contracts and OpenSea's collection page at testnets (above).
+These examples are based on deployed ERC721C and its OpenSea's collection page at testnets (above).
 
-1. This is what we MUST see at `Creator earnings` tab at OpenSea's collection settings when transfer validator contract is not set, meaning `getTransferValidator` ([link](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/extensions/ERC721TransferValidator.sol#L38)) returns zero address, but since our custom contract is comply we always have an option to enforce it.
+1. This is what we MUST see at `Creator earnings` tab at OpenSea's collection page settings when transfer validator contract is not set - meaning `getTransferValidator` ([link](https://github.com/0xkuwabatake/simple-ERC721C-extension/blob/main/src/extensions/ERC721TransferValidator.sol#L38)) returns zero address, but since our custom contract is comply we always have an option to enforce it.
 ![1](images/1_when-fees-are-not-configured-but-enforceable.png)
 
 2. After fees were configured via OpenSea without setting transfer validator contract.
