@@ -4,38 +4,33 @@ pragma solidity ^0.8.4;
 import {ICreatorToken} from "../interfaces/ICreatorToken.sol";
 import {ITransferValidator721} from "../interfaces/ITransferValidator721.sol";
 
-/**
- * @title  ERC721TransferValidator
- * @author 0xkuwabatake(@0xkuwabatake)
- * @author Modified from ProjectOpenSea/seadrop/src/lib:
- *         https://github.com/ProjectOpenSea/seadrop/blob/main/src/lib/ERC721TransferValidator.sol
- * @notice ERC721 Contract extension for specific ERC721 validation transfer.
- * @dev    The contract is intended to be inherited by ERC721-based implementation contract
- *         that applies creator fee enforcement based on OpenSea doc:
- *         https://docs.opensea.io/docs/creator-fee-enforcement#creator-token-standard 
- */
+/// @title  ERC721TransferValidator
+/// @author BDSKMN (@BDSKMN)
+///         Modified from ProjectOpenSea's ERC721TransferValidator:
+///         https://github.com/ProjectOpenSea/seadrop/blob/main/src/lib/ERC721TransferValidator.sol
+/// @notice Abstract contract for ERC721 transfer validation.
+/// @dev    Designed for ERC721 contracts implementing OpenSea's creator fee standard:
+///         https://docs.opensea.io/docs/creator-fee-enforcement#creator-token-standard
 abstract contract ERC721TransferValidator is ICreatorToken {
     /*//////////////////////////////////////////////////////////////
-                                CONSTANTS
+                              CONSTANTS
     //////////////////////////////////////////////////////////////*/
 
-    /// @dev Transfer validation function signature for ERC721.
-    /// @custom:note Ref: https://docs.opensea.io/docs/creator-fee-enforcement#creator-token-standard
+    /// @dev ERC721 transfer validation function signature.
     bytes4 private constant _ERC721_TRANSFER_VALIDATION_FUNCTION_SIGNATURE = 0xcaee23ea;
 
     /// @dev Interface ID for ICreatorToken.
-    /// @custom:note bytes4((type(ICreatorToken).interfaceId))
     bytes4 internal constant INTERFACE_ID_ICREATORTOKEN = 0xad0d7f6c;
 
     /*//////////////////////////////////////////////////////////////
-                                STORAGE
+                              STORAGE
     //////////////////////////////////////////////////////////////*/
 
-    /// @dev Transfer validator address to interact with {ITransferValidator721}.
+    /// @dev Address of the transfer validator contract.
     ITransferValidator721 internal _transferValidator;
 
     /*//////////////////////////////////////////////////////////////
-                        PUBLIC VIEW FUNCTIONS
+                            PUBLIC FUNCTIONS
     //////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ICreatorToken
@@ -55,16 +50,12 @@ abstract contract ERC721TransferValidator is ICreatorToken {
     }
 
     /*//////////////////////////////////////////////////////////////
-                            INTERNAL FUNCTION
+                          INTERNAL FUNCTION
     //////////////////////////////////////////////////////////////*/
 
-    /**
-     * @dev Sets `validator` as transfer validator internal.
-     * @param validator Transfer validator contract.
-     * @custom:notes
-     * - The external method to call this function must include access control.
-     * - Sets `validator` to address zero means no transfer validator is set.
-     */
+    /// @dev Sets the transfer validator.
+    /// @param validator The address of the transfer validator contract.
+    /// @notice Passing `address(0)` removes the current transfer validator.
     function _setTransferValidator(address validator) internal {
         emit TransferValidatorUpdated(address(_transferValidator), validator);
         _transferValidator = ITransferValidator721(validator);

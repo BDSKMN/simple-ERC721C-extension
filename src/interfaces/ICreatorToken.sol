@@ -1,26 +1,31 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
-        
-/**
- * @title  ICreatorToken
- * @author 0xkuwabatake (@0xkuwabatake)
- * @notice Minimal creator token standard interface based on: 
- *         https://docs.opensea.io/docs/creator-fee-enforcement#creator-token-standard
- */
+
+/// @title  ICreatorToken
+/// @author BDSKMN (@BDSKMN)
+/// @notice Interface for a minimal creator token standard, allowing integration with 
+///         OpenSea's creator fee enforcement. 
+/// @dev    Reference:
+///         https://docs.opensea.io/docs/creator-fee-enforcement#creator-token-standard
 interface ICreatorToken {
-    /// @dev Emitted when `newValidator` contract is updated from `oldValidator` contract.
+    /// @dev Emitted when the transfer `validator` contract address is updated.
+    /// @param oldValidator The previous validator contract address.
+    /// @param newValidator The new validator contract address.
     event TransferValidatorUpdated(address oldValidator, address newValidator);
 
-    /// @dev Returns recent transfer `validator` contract address.
-    /// @custom:note The zero address means no transfer validator is set.
+    /// @dev Retrieves the current transfer validator contract address.
+    /// @return validator The address of the current transfer validator contract.
     function getTransferValidator() external view returns (address validator);
 
-    /// @dev Returns `functionSignature` and `isViewFunction` from implemented transfer validation function.
+    /// @dev Retrieves information about the transfer validation function.
+    /// @return functionSignature The selector of the implemented validation function.
+    /// @return isViewFunction Indicates whether the validation function is a view function.
     function getTransferValidationFunction() 
         external
         view
         returns (bytes4 functionSignature, bool isViewFunction);
 
-    /// @dev Sets transfer `validator` contract.
+    /// @dev Updates the transfer validator contract address.
+    /// @param validator The address of the new validator contract.
     function setTransferValidator(address validator) external;
 }

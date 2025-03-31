@@ -6,21 +6,11 @@ import {ERC2981} from "lib/solady/src/tokens/ERC2981.sol";
 import {Ownable} from "lib/solady/src/auth/Ownable.sol";
 import {ERC721TransferValidator} from "../extensions/ERC721TransferValidator.sol";
 
-/**
- * @title  ERC721C
- * @author 0xkuwabatake(@0xkuwabatake)
- * @notice A Simple ERC721-based implementation contract example that applies
- *         creator fee enforcement based on OpenSea Creator Fee Enforcement doc:
- *         https://docs.opensea.io/docs/creator-fee-enforcement#creator-token-standard
- * @dev
- * - The contract does NOT inherit to ERC721C by LimitBreak:
- *   https://github.com/limitbreakinc/creator-token-contracts/blob/main/contracts/erc721c/ERC721C.sol
- * - The contract also inherits to ERC2981 - NFT Royalty Standard:
- *   https://eips.ethereum.org/EIPS/eip-2981 
- * - It is optional to call {ERC721TransferValidator - _setTransferValidator}
- *   and {ERC2981 - _setDefaultRoyalty} inside the constructor.
- * - Do NOT copy anything here into production code unless you really know what you are doing.
- */
+/// @title  ERC721C
+/// @author BDSKMN (@BDSKMN)
+/// @dev    A Simple ERC721-based implementation contract example that applies
+///         creator fee enforcement based on OpenSea Creator Fee Enforcement doc:
+///         https://docs.opensea.io/docs/creator-fee-enforcement#creator-token-standard
 contract ERC721C is ERC721, ERC2981, ERC721TransferValidator, Ownable {
 
     /*//////////////////////////////////////////////////////////////
@@ -45,13 +35,12 @@ contract ERC721C is ERC721, ERC2981, ERC721TransferValidator, Ownable {
     //////////////////////////////////////////////////////////////*/
 
     /// @dev Sets the default royalty `receiver` and `feeNumerator`.
-    /// @custom:note Ref: https://github.com/Vectorized/solady/blob/main/src/tokens/ERC2981.sol#L99
     function setDefaultRoyalty(address receiver, uint96 feeNumerator) external onlyOwner {
         _setDefaultRoyalty(receiver, feeNumerator);
     }
 
     /// @dev Sets transfer `validator` contract.
-    /// @custom:note See: {ICreatorToken - setTransferValidator}.
+    /// Note: See {ICreatorToken - setTransferValidator}.
     function setTransferValidator(address validator) external onlyOwner {
         _setTransferValidator(validator);
     }
@@ -93,10 +82,7 @@ contract ERC721C is ERC721, ERC2981, ERC721TransferValidator, Ownable {
                         INTERNAL FUNCTION
     //////////////////////////////////////////////////////////////*/
 
-    /// @dev  Overriden {ERC721 - _beforeTokenTransfer} hook to facilitate transfer validation.
-    /// Note: The NFT contract should implement one of the following transfer validation functions 
-    ///       in their _beforeTokenTransfer hook, with the call being performed to 
-    ///       the assigned transfer validator (if one is set).
+    /// @dev Overriden {ERC721 - _beforeTokenTransfer} hook to facilitate transfer validation.
     function _beforeTokenTransfer(address from, address to, uint256 tokenId)
         internal
         virtual
